@@ -17,7 +17,6 @@ from django.contrib import messages
 from .forms import OfertaLaboralForm, CampaniaForm
 from django.db.models import Q
 from django import forms
-from django.http import JsonResponse
 from .models import Postulacion
 
 
@@ -221,23 +220,8 @@ class PostulacionForm(forms.ModelForm):
         model = Postulacion
         fields = '__all__'
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['departamento'].queryset = Region.objects.none()
-        self.fields['ciudad'].queryset = City.objects.none()
+    # No necesitas redefinir __init__ si no vas a modificar queryset
 
-        if 'pais' in self.data:
-            try:
-                pais_id = int(self.data.get('pais'))
-                self.fields['departamento'].queryset = Region.objects.filter(country_id=pais_id)
-            except (ValueError, TypeError):
-                pass
-        if 'departamento' in self.data:
-            try:
-                departamento_id = int(self.data.get('departamento'))
-                self.fields['ciudad'].queryset = City.objects.filter(region_id=departamento_id)
-            except (ValueError, TypeError):
-                pass
 
 #Vista para postulación
 def postular(request, campania_id):
