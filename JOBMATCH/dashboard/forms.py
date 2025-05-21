@@ -13,12 +13,18 @@ class OfertaLaboralForm(forms.ModelForm):
             'critica': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
         }
         
+# forms.py
 class CampaniaForm(forms.ModelForm):
     class Meta:
         model = Campania
         fields = ['nombre', 'contenido', 'presupuesto', 'fecha_inicio', 'plataformas', 'OfertaLaboral']
         widgets = {
-            'fecha_inicio': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-            'plataformas': forms.CheckboxSelectMultiple(),
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'contenido': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'presupuesto': forms.NumberInput(attrs={'class': 'form-control'}),
+            'fecha_inicio': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
+            'plataformas': forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input'}),
+            'OfertaLaboral': forms.Select(attrs={'class': 'form-select'}),
         }
+
 
