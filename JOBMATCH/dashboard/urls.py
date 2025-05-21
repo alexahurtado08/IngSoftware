@@ -24,7 +24,4 @@ urlpatterns = [
     path('ver-anuncio/<int:campania_id>/', views.vista_anuncio, name='vista_anuncio'),
     path('postular/<int:campania_id>/', views.postular, name='postular'),
 
-    # AJAX para departamentos/ciudades
-    path('actualizar-departamentos/', views.actualizar_departamentos, name='actualizar_departamentos'),
-    path('actualizar-ciudades/', views.actualizar_ciudades, name='actualizar_ciudades'),
 ]

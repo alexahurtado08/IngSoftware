@@ -1,11 +1,10 @@
-
 {% load static %}
 <!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crear Campaña - JobMatch AI</title>
+    <title>Editar Campaña - JobMatch AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.30.0/tabler-icons.min.css" />
     <link rel="stylesheet" href="{% static 'dashboard/css/styles.css' %}">
@@ -19,9 +18,9 @@
         </div>
         <ul class="nav-menu">
           <li class="nav-item"><a href="{% url 'dashboard' %}" class="nav-link"><i class="ti ti-layout-dashboard"></i><span class="nav-text">Panel</span></a></li>
-          <li class="nav-item"><a href="#" class="nav-link"><i class="ti ti-activity"></i><span class="nav-text">Campañas Activas</span></a></li>
+          <li class="nav-item active"><a href="{% url 'campania_activas' %}" class="nav-link"><i class="ti ti-activity"></i><span class="nav-text">Campañas Activas</span></a></li>
           <li class="nav-item"><a href="{% url 'vacante' %}" class="nav-link"><i class="ti ti-briefcase"></i><span class="nav-text">Vacante</span></a></li>
-          <li class="nav-item active"><a href="{% url 'create_campaign' %}" class="nav-link"><i class="ti ti-plus"></i><span class="nav-text">Crear Campaña</span></a></li>
+          <li class="nav-item"><a href="{% url 'create_campaign' %}" class="nav-link"><i class="ti ti-plus"></i><span class="nav-text">Crear Campaña</span></a></li>
           <li class="nav-item"><a href="#" class="nav-link"><i class="ti ti-settings"></i><span class="nav-text">Configuración</span></a></li>
         </ul>
         <div class="logout-container"><i class="ti ti-logout"></i><span class="nav-text">Cerrar Sesión</span></div>
@@ -39,52 +38,47 @@
         {% endif %}
 
         <header class="main-header">
-          <div class="welcome-container">
-            <h2 class="welcome-heading">Nueva Campaña Publicitaria</h2>
-            {% if initial_data.title %}
-              <p class="campaign-source">Creando desde vacante: <strong>{{ initial_data.title }}</strong></p>
-            {% endif %}
-          </div>
+          <h2 class="welcome-heading">Editar Campaña</h2>
         </header>
 
         <section class="campaign-form">
           <form class="campaign-form-container" method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
-            {% if initial_data.id %}
-              <input type="hidden" name="vacante_id" value="{{ initial_data.id }}">
-            {% endif %}
+            {# Supongo que aquí recibes un objeto campaign o initial_data con los datos para llenar los campos #}
 
             <div class="form-group">
-  <label class="form-label">Oferta Laboral</label>
-  <select name="job_offer" class="form-input" required>
-    <option value="" disabled selected>Selecciona una oferta</option>
-    {% for oferta in ofertas %}
-      <option value="{{ oferta.id }}">{{ oferta.cargo }} - {{ oferta.ubicacion }}</option>
-    {% endfor %}
-  </select>
-</div>
+              <label class="form-label">Oferta Laboral</label>
+              <select name="job_offer" class="form-input" required>
+                <option value="" disabled>Selecciona una oferta</option>
+                {% for oferta in ofertas %}
+                  <option value="{{ oferta.id }}" {% if campaign.job_offer.id == oferta.id %}selected{% endif %}>
+                    {{ oferta.cargo }} - {{ oferta.ubicacion }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
 
             <div class="form-group">
               <label class="form-label">Nombre de la Campaña</label>
-              <input type="text" name="campaign_name" class="form-input" value="{{ initial_data.title|default:'' }}" placeholder="Ej: Campaña de Contratación Developers" required>
+              <input type="text" name="campaign_name" class="form-input" value="{{ campaign.name }}" placeholder="Ej: Campaña de Contratación Developers" required>
             </div>
 
             <div class="form-group">
               <label class="form-label">Plataformas</label>
               <div class="platform-selector">
                 <label class="platform-option">
-                  <input type="checkbox" name="platforms" value="facebook">
+                  <input type="checkbox" name="platforms" value="facebook" {% if "facebook" in campaign.platforms %}checked{% endif %}>
                   <i class="ti ti-brand-facebook"></i>
                   Facebook
                 </label>
                 <label class="platform-option">
-                  <input type="checkbox" name="platforms" value="instagram">
+                  <input type="checkbox" name="platforms" value="instagram" {% if "instagram" in campaign.platforms %}checked{% endif %}>
                   <i class="ti ti-brand-instagram"></i>
                   Instagram
                 </label>
                 <label class="platform-option">
-                  <input type="checkbox" name="platforms" value="tiktok">
+                  <input type="checkbox" name="platforms" value="tiktok" {% if "tiktok" in campaign.platforms %}checked{% endif %}>
                   <i class="ti ti-brand-tiktok"></i>
                   TikTok
                 </label>
@@ -94,17 +88,17 @@
             <div class="grid-2col">
               <div class="form-group">
                 <label class="form-label">Presupuesto (USD)</label>
-                <input type="number" name="budget" class="form-input" placeholder="$0.00" min="50" step="50" required>
+                <input type="number" name="budget" class="form-input" placeholder="$0.00" min="50" step="50" value="{{ campaign.budget }}" required>
               </div>
               <div class="form-group">
                 <label class="form-label">Programación</label>
-                <input type="datetime-local" name="schedule" class="form-input" required>
+                <input type="datetime-local" name="schedule" class="form-input" value="{{ campaign.schedule|date:'Y-m-d\\TH:i' }}" required>
               </div>
             </div>
 
             <div class="form-group">
               <label class="form-label">Contenido del Anuncio</label>
-              <textarea class="form-textarea" name="ad_content" rows="6" placeholder="Escribe tu anuncio..." required>{{ initial_data.description|default:'' }}</textarea>
+              <textarea class="form-textarea" name="ad_content" rows="6" placeholder="Escribe tu anuncio..." required>{{ campaign.ad_content }}</textarea>
             </div>
 
             <div class="form-group">
@@ -121,10 +115,10 @@
 
             <div class="form-actions">
               <button type="submit" class="btn-primary">
-                <i class="ti ti-rocket"></i>
-                Lanzar Campaña
+                <i class="ti ti-device-floppy"></i>
+                Guardar cambios
               </button>
-              <a href="{% url 'vacante' %}" class="btn-secondary">
+              <a href="{% url 'campania_activas' %}" class="btn-secondary">
                 <i class="ti ti-x"></i>
                 Cancelar
               </a>
@@ -143,15 +137,6 @@
         fileNameContainer.textContent = files.length > 0 
           ? `${files.length} archivo(s): ${fileNames}` 
           : 'No se seleccionaron archivos';
-      });
-
-      // Autoseleccionar plataformas si se creó desde vacante
-      window.addEventListener('DOMContentLoaded', () => {
-        {% if initial_data.title %}
-          document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            checkbox.checked = true;
-          });
-        {% endif %}
       });
     </script>
   </body>

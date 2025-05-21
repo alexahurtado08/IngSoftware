@@ -1,18 +1,64 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Editar Campaña</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Campaña - JobMatch AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.30.0/tabler-icons.min.css" />
     <link rel="stylesheet" href="{% static 'dashboard/css/styles.css' %}">
-</head>
-<body>
-    <h2>Editar Campaña</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Guardar cambios</button>
-        <a href="{% url 'campania_activas' %}">Cancelar</a>
-    </form>
-</body>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <nav class="sidebar">
+        <div class="logo-container">
+          <img src="{% static 'images/logo.png' %}" alt="Logo JobMatch AI" class="logo-image" />
+          <h1 class="logo-text">JOBMATCH AI</h1>
+        </div>
+        <ul class="nav-menu">
+          <li class="nav-item"><a href="{% url 'dashboard' %}" class="nav-link"><i class="ti ti-layout-dashboard"></i><span class="nav-text">Panel</span></a></li>
+          <li class="nav-item active"><a href="{% url 'campania_activas' %}" class="nav-link"><i class="ti ti-activity"></i><span class="nav-text">Campañas Activas</span></a></li>
+          <li class="nav-item"><a href="{% url 'vacante' %}" class="nav-link"><i class="ti ti-briefcase"></i><span class="nav-text">Vacante</span></a></li>
+          <li class="nav-item"><a href="{% url 'create_campaign' %}" class="nav-link"><i class="ti ti-plus"></i><span class="nav-text">Crear Campaña</span></a></li>
+          <li class="nav-item"><a href="#" class="nav-link"><i class="ti ti-settings"></i><span class="nav-text">Configuración</span></a></li>
+        </ul>
+        <div class="logout-container"><i class="ti ti-logout"></i><span class="nav-text">Cerrar Sesión</span></div>
+      </nav>
+
+      <main class="main-content">
+        {% if messages %}
+        <div class="alert-container">
+          {% for message in messages %}
+          <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <header class="main-header">
+          <h2 class="welcome-heading">Editar Campaña</h2>
+        </header>
+
+        <section class="campaign-form">
+          <form class="campaign-form-container" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <div class="form-actions">
+              <button type="submit" class="btn-primary">
+                <i class="ti ti-device-floppy"></i>
+                Guardar cambios
+              </button>
+              <a href="{% url 'campania_activas' %}" class="btn-secondary">
+                <i class="ti ti-x"></i>
+                Cancelar
+              </a>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+  </body>
 </html>

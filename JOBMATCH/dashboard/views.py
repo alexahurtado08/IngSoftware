@@ -17,9 +17,7 @@ from django.contrib import messages
 from .forms import OfertaLaboralForm, CampaniaForm
 from django.db.models import Q
 from django import forms
-from cities_light.models import Country, Region, City
 from django.http import JsonResponse
-from cities_light.models import Region, City
 from .models import Postulacion
 
 
@@ -217,7 +215,6 @@ def vista_anuncio(request, campania_id):
 
 # Crear el formulario para postulación
 from django import forms
-from cities_light.models import Country, Region, City
 
 class PostulacionForm(forms.ModelForm):
     class Meta:
@@ -256,15 +253,6 @@ def postular(request, campania_id):
 
 
 
-def actualizar_departamentos(request):
-    pais_id = request.GET.get('pais_id')
-    departamentos = Region.objects.filter(country_id=pais_id).values('id', 'name')
-    return JsonResponse({'departamentos': list(departamentos)})
-
-def actualizar_ciudades(request):
-    departamento_id = request.GET.get('departamento_id')
-    ciudades = City.objects.filter(region_id=departamento_id).values('id', 'name')
-    return JsonResponse({'ciudades': list(ciudades)})
 
 def register(request):
     if request.method == 'POST':
